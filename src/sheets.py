@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
+from rapidfuzz import fuzz
 from src.config import (
     SPREADSHEET_ID, SHEET_NAME, CREDENTIALS_FILE, GOOGLE_CREDENTIALS,
     COL_ID, COL_TASK_NAME, COL_CATEGORY, COL_PRIORITY,
@@ -55,16 +56,40 @@ def get_pending_tasks() -> list[dict]:
     return tasks
 
 
+FUZZY_THRESHOLD = 70  # 類似度スコアの閾値（0〜100）
+
+
 def find_task_row(task_name_hint: str) -> tuple[int, list] | tuple[None, None]:
     """
-    タスク名（部分一致・大文字小文字無視）でシート行番号を探す。
+    タスク名でシート行番号を探す。
+    1. 部分一致（完全に含む）
+    2. あいまい検索（rapidfuzz による類似度スコア）
     返り値: (1始まりのシート行番号, 行データ) または (None, None)
     """
     rows = _get_all_rows()
     hint = task_name_hint.strip().lower()
+
+    # 1. 部分一致
     for i, row in enumerate(rows):
         if len(row) > COL_TASK_NAME and hint in row[COL_TASK_NAME].lower():
             return i + 2, row  # ヘッダー行(1) + 0始まりインデックス → +2
+
+    # 2. あいまい検索
+    best_score = 0
+    best_index = None
+    for i, row in enumerate(rows):
+        if len(row) <= COL_TASK_NAME:
+            continue
+        score = fuzz.token_set_ratio(hint, row[COL_TASK_NAME].lower())
+        if score > best_score:
+            best_score = score
+            best_index = i
+
+    if best_score >= FUZZY_THRESHOLD and best_index is not None:
+        row = rows[best_index]
+        logger.info(f"あいまい検索でマッチ: '{task_name_hint}' → '{row[COL_TASK_NAME]}' (スコア: {best_score})")
+        return best_index + 2, row
+
     return None, None
 
 
