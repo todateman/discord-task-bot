@@ -17,7 +17,7 @@ PARSE_SYSTEM = """
 以下のJSONのみを返してください（説明文は不要）:
 
 {
-  "action": "complete" | "in_progress" | "add" | "none",
+  "action": "complete" | "in_progress" | "add" | "list" | "none",
   "task_name": "タスク名（actionがcomplete/in_progress/addのとき）",
   "category": "分類（addのとき、不明なら空文字）",
   "priority": "高" | "中" | "低"（addのとき、不明なら"中"）,
@@ -30,6 +30,7 @@ PARSE_SYSTEM = """
 - 「完了」「終わった」「done」「finished」などが含まれ、タスク名が読み取れる → "complete"
 - 「着手」「開始」「進行中」「やってる」「WIP」などが含まれる → "in_progress"
 - 「追加」「登録」「新規」「タスク:」「TODO:」で始まる → "add"
+- 「タスク一覧」「残っているタスク」「タスクを教えて」「何のタスク」「タスクある」など、タスクの一覧・確認を求めている → "list"
 - それ以外（雑談・質問・コマンド以外）→ "none"
 """
 
