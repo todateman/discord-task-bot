@@ -1,24 +1,22 @@
-app = "discord-task-bot"        # fly launch で自動生成した名前に変更
-primary_region = "nrt"          # 東京リージョン
+# fly.toml app configuration file generated for discord-task-bot on 2026-03-14T23:08:25+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'discord-task-bot'
+primary_region = 'sin'
 
 [build]
 
 [env]
-  # 非機密の設定はここに書いても可（機密はfly secrets setで）
-  SHEET_NAME      = "タスク一覧"
-  WEEKLY_REPORT_DAY  = "monday"
-  WEEKLY_REPORT_HOUR = "9"
+  SHEET_NAME = 'タスク一覧'
+  WEEKLY_REPORT_DAY = 'sun'
+  WEEKLY_REPORT_HOUR = '9'
 
-# Botはリクエストを受けないのでHTTPサービス不要
-# ただし Fly.io の "always on" を維持するためにHTTPヘルスチェックを設定
-[http_service]
-  internal_port        = 8080
-  force_https          = false
-  auto_stop_machines   = false   # Botを常時起動
-  auto_start_machines  = true
-  min_machines_running = 1
+[processes]
+  app = "python -m src.bot"
 
 [[vm]]
-  memory = "256mb"
-  cpu_kind = "shared"
+  memory = '256mb'
   cpus = 1
+  memory_mb = 256

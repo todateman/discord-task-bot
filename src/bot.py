@@ -39,7 +39,7 @@ async def on_message(message: discord.Message):
         return
 
     # 監視チャンネル以外は無視（TASK_CHANNELSが空なら全チャンネル対象）
-    if TASK_CHANNELS and TASK_CHANNELS != [""]:
+    if TASK_CHANNELS:
         if message.channel.name not in TASK_CHANNELS:
             return
 

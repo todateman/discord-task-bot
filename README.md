@@ -1,6 +1,6 @@
 # Discord タスク管理Bot
 
-Discord の複数チャンネルを監視し、投稿されたメッセージを AI（Claude）が解析してタスクの完了・追加を自動処理します。毎週月曜朝に AI 生成の進捗レポートを Discord に投稿します。
+Discord の複数チャンネルを監視し、投稿されたメッセージを AI（Claude）が解析してタスクの完了・追加を自動処理します。毎週日曜朝に AI 生成の進捗レポートを Discord に投稿します。
 
 - **ホスティング**: Fly.io（無料〜$5/月）
 - **AI エンジン**: Claude Haiku（$1〜3/月）
@@ -13,17 +13,19 @@ Discord の複数チャンネルを監視し、投稿されたメッセージを
 
 ```mermaid
 graph TD
-    subgraph Discord["Discord サーバー"]
-        CH1["#task-todo"]
-        CH2["#task-dev"]
-        CH3["#task-ops"]
-        REPORT["#general（レポート投稿）"]
+    subgraph Discord["Discord サーバー "ちびT インターナショナル""]
+        CH1["#タスク管理"]
+        CH2["#一般"]
+        CH3["#メカ"]
+        CH4["#制御"]
+        CH5["#回路"]
+        REPORT["#一般（レポート投稿）"]
     end
 
     subgraph Fly["Fly.io（nrt リージョン）"]
         BOT["bot.py\nDiscord クライアント"]
         AI["ai_agent.py\nClaude Haiku"]
-        SCHED["scheduler.py\nAPScheduler（毎週月曜 09:00 JST）"]
+        SCHED["scheduler.py\nAPScheduler（毎週日曜 09:00 JST）"]
     end
 
     subgraph Sheets["Google Sheets"]
@@ -33,6 +35,8 @@ graph TD
     CH1 -->|メッセージ| BOT
     CH2 -->|メッセージ| BOT
     CH3 -->|メッセージ| BOT
+    CH4 -->|メッセージ| BOT
+    CH5 -->|メッセージ| BOT
 
     BOT -->|テキスト解析依頼| AI
     AI -->|action + タスク情報| BOT
@@ -138,13 +142,14 @@ graph LR
 | 列 | 内容 | 例 |
 | --- | --- | --- |
 | A | ID（自動採番） | T0001 |
-| B | タスク名 | ○○機能の実装 |
-| C | 分類 | 開発 |
+| B | タスク名 | 磁気エンコーダのホルダー作り直し |
+| C | 分類 | メカ / 制御 / 回路 / IoT / その他 |
 | D | 優先度 | 高 / 中 / 低 |
-| E | 期限 | 2026/03/31 |
-| F | 担当者 | Tomo |
-| G | ステータス | 未着手 / 進行中 / 完了 |
-| H | 更新日時 | 2026/03/14 09:00 |
+| E | 期限 | 2025/12/31 |
+| F | 担当者 | tomohiro kusu |
+| G | ステータス | 中止 / 未着手 / 進行中 / 完了 |
+| H | 進捗 | 2025/11/25：発注 <BR> 2025/11/25：部品到着 <BR> 2025/12/20：取付完了 |
+| I | 更新日時 | 2026/03/14 09:00 |
 
 > スプレッドシートの 1 行目に上記ヘッダーを手動で入力してください。
 
@@ -182,7 +187,7 @@ Bot が返信します：
 
 ### 週次レポート（自動）
 
-毎週月曜 09:00 JST に `REPORT_CHANNEL` へ自動投稿されます。
+毎週日曜 09:00 JST に `REPORT_CHANNEL` へ自動投稿されます。
 
 ```txt
 【週次タスクリマインド】2026/03/16
@@ -208,7 +213,7 @@ _週次リマインド from タスクBot_
 4. **Privileged Gateway Intents** で `MESSAGE CONTENT INTENT` を有効化
 5. **OAuth2 → URL Generator** で以下を選択してサーバーに招待
    - Scopes: `bot`
-   - Permissions: `Read Messages/View Channels`, `Send Messages`, `Read Message History`
+   - Permissions: `メッセージを管理`, `チャンネルを表示`, `メッセージを送る`, `メッセージ履歴を読む`
 
 ### 2. Google Sheets + サービスアカウント
 
@@ -258,20 +263,51 @@ flyctl auth login
 # アプリ初期化（fly.toml の app 名が自動設定されます）
 flyctl launch --no-deploy
 
-# 機密情報をシークレットとして登録
-flyctl secrets set DISCORD_TOKEN="your_token"
-flyctl secrets set ANTHROPIC_API_KEY="your_key"
-flyctl secrets set SPREADSHEET_ID="your_id"
-flyctl secrets set TASK_CHANNELS="task-todo,task-dev,task-ops"
-flyctl secrets set REPORT_CHANNEL="general"
+# .env の内容をシークレットとして一括登録（自動）
+# Bash
+flyctl secrets import < .env
+
+# PowerShell
+Get-Content .env | flyctl secrets import
+
+# credentials.json の内容を環境変数シークレットとして登録
+# Bash
 flyctl secrets set GOOGLE_CREDENTIALS="$(cat credentials.json)"
 
+# PowerShell
+flyctl secrets set GOOGLE_CREDENTIALS="$(Get-Content -Raw .\credentials.json)"
+
 # デプロイ
-flyctl deploy
+flyctl deploy --ha=false
 
 # ログ確認
 flyctl logs
 ```
+
+`flyctl launch` 実行中に次のエラーが出た場合:
+
+```txt
+Your account has been marked as high risk.
+```
+
+Fly.io 側でアカウント確認が必要です。`https://fly.io/high-risk-unlock` で解除後、
+次を再実行してください。
+
+```bash
+# アプリ作成（未作成の場合）
+flyctl launch --no-deploy
+
+# アプリが存在するか確認
+flyctl apps list
+```
+
+`Could not find App "..."` が出る場合は、アプリ作成が完了していない状態です。
+先に `flyctl launch --no-deploy` を成功させてから `flyctl secrets import` を実行してください。
+
+Google 認証情報は `GOOGLE_CREDENTIALS`（JSON文字列）として環境変数に保持され、
+`src/sheets.py` で直接読み込まれます。
+
+`.env` は `KEY=VALUE` 形式で、行末のインラインコメント（`# ...`）を付けないでください。
 
 > **重要**: `credentials.json` は `.gitignore` に追加してください。
 
@@ -300,6 +336,7 @@ Claude Haiku の消費トークン目安（1ヶ月）:
 | --- | --- | --- |
 | discord.py | 2.3.2 | Discord Bot フレームワーク |
 | anthropic | 0.34.2 | Claude API クライアント |
+| httpx | 0.27.2 | anthropic 依存の互換バージョン固定 |
 | google-api-python-client | 2.143.0 | Google Sheets API |
 | google-auth | 2.34.0 | Google 認証 |
 | APScheduler | 3.10.4 | 週次スケジューラ |

@@ -1,13 +1,13 @@
-import re
+import json
 import logging
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from src.config import (
-    SPREADSHEET_ID, SHEET_NAME, CREDENTIALS_FILE,
+    SPREADSHEET_ID, SHEET_NAME, CREDENTIALS_FILE, GOOGLE_CREDENTIALS,
     COL_ID, COL_TASK_NAME, COL_CATEGORY, COL_PRIORITY,
-    COL_DUE_DATE, COL_ASSIGNEE, COL_STATUS, COL_UPDATED_AT,
-    STATUS_TODO, STATUS_DONE,
+    COL_DUE_DATE, COL_ASSIGNEE, COL_STATUS, COL_PROGRESS,
+    STATUS_TODO, STATUS_DONE, STATUS_CANCELED,
 )
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,11 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 def _get_service():
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+    if GOOGLE_CREDENTIALS:
+        creds_dict = json.loads(GOOGLE_CREDENTIALS)
+        creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    else:
+        creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
     return build("sheets", "v4", credentials=creds).spreadsheets()
 
 
@@ -25,7 +29,7 @@ def _get_all_rows() -> list[list]:
     svc = _get_service()
     result = svc.values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A2:H",
+        range=f"{SHEET_NAME}!A2:I",
     ).execute()
     return result.get("values", [])
 
@@ -35,9 +39,9 @@ def get_pending_tasks() -> list[dict]:
     rows = _get_all_rows()
     tasks = []
     for row in rows:
-        while len(row) < 8:
+        while len(row) < 9:
             row.append("")
-        if row[COL_STATUS] != STATUS_DONE:
+        if row[COL_STATUS] not in (STATUS_DONE, STATUS_CANCELED):
             tasks.append({
                 "id":        row[COL_ID],
                 "task_name": row[COL_TASK_NAME],
@@ -46,6 +50,7 @@ def get_pending_tasks() -> list[dict]:
                 "due_date":  row[COL_DUE_DATE],
                 "assignee":  row[COL_ASSIGNEE],
                 "status":    row[COL_STATUS],
+                "progress":  row[COL_PROGRESS],
             })
     return tasks
 
@@ -72,9 +77,9 @@ def update_task_status(task_name_hint: str, new_status: str) -> str:
     now = datetime.now().strftime("%Y/%m/%d %H:%M")
     svc.values().update(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!G{row_num}:H{row_num}",
+        range=f"{SHEET_NAME}!G{row_num}:I{row_num}",
         valueInputOption="USER_ENTERED",
-        body={"values": [[new_status, now]]},
+        body={"values": [[new_status, row[COL_PROGRESS] if len(row) > COL_PROGRESS else "", now]]},
     ).execute()
     task_name = row[COL_TASK_NAME] if len(row) > COL_TASK_NAME else task_name_hint
     logger.info(f"ステータス更新: {task_name} → {new_status} (行{row_num})")
@@ -94,12 +99,13 @@ def add_task(task_info: dict) -> str:
         task_info.get("due_date", ""),
         task_info.get("assignee", ""),
         task_info.get("status", STATUS_TODO),
+        task_info.get("progress", ""),
         now,
     ]
     svc = _get_service()
     svc.values().append(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"{SHEET_NAME}!A:H",
+        range=f"{SHEET_NAME}!A:I",
         valueInputOption="USER_ENTERED",
         insertDataOption="INSERT_ROWS",
         body={"values": [new_row]},
