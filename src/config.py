@@ -1,0 +1,38 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Discord
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+TASK_CHANNELS = os.getenv("TASK_CHANNELS", "").split(",")  # 監視するチャンネル名のリスト
+REPORT_CHANNEL = os.getenv("REPORT_CHANNEL", "general")   # 週次レポート投稿先チャンネル名
+
+# Claude API
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト最小化
+
+# Google Sheets
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+SHEET_NAME = os.getenv("SHEET_NAME", "タスク一覧")
+CREDENTIALS_FILE = os.getenv("CREDENTIALS_FILE", "credentials.json")
+
+# スケジューラ設定（JST = UTC+9）
+WEEKLY_REPORT_DAY = "monday"   # 毎週月曜
+WEEKLY_REPORT_HOUR = 9         # 09:00 JST
+WEEKLY_REPORT_TIMEZONE = "Asia/Tokyo"
+
+# Sheets列定義
+COL_ID         = 0
+COL_TASK_NAME  = 1
+COL_CATEGORY   = 2
+COL_PRIORITY   = 3
+COL_DUE_DATE   = 4
+COL_ASSIGNEE   = 5
+COL_STATUS     = 6
+COL_UPDATED_AT = 7
+
+PRIORITY_LABELS = {"高": 1, "中": 2, "低": 3}
+STATUS_TODO       = "未着手"
+STATUS_IN_PROGRESS = "進行中"
+STATUS_DONE        = "完了"

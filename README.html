@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="discord-%E3%82%BF%E3%82%B9%E3%82%AF%E7%AE%A1%E7%90%86bot">Discord タスク管理Bot</h1>
+<p>Discord の複数チャンネルを監視し、投稿されたメッセージを AI（Claude）が解析してタスクの完了・追加を自動処理します。毎週月曜朝に AI 生成の進捗レポートを Discord に投稿します。</p>
+<ul>
+<li><strong>ホスティング</strong>: Fly.io（無料〜$5/月）</li>
+<li><strong>AI エンジン</strong>: Claude Haiku（$1〜3/月）</li>
+<li><strong>データストア</strong>: Google Sheets（無料）</li>
+<li><strong>合計目安</strong>: $1〜$8/月</li>
+</ul>
+<hr>
+<h2 id="%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E6%A7%8B%E6%88%90">システム構成</h2>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    subgraph Discord["Discord サーバー"]
+        CH1["#task-todo"]
+        CH2["#task-dev"]
+        CH3["#task-ops"]
+        REPORT["#general（レポート投稿）"]
+    end
+
+    subgraph Fly["Fly.io（nrt リージョン）"]
+        BOT["bot.py\nDiscord クライアント"]
+        AI["ai_agent.py\nClaude Haiku"]
+        SCHED["scheduler.py\nAPScheduler（毎週月曜 09:00 JST）"]
+    end
+
+    subgraph Sheets["Google Sheets"]
+        DB[("タスク一覧\nID / タスク名 / 分類\n優先度 / 期限 / 担当者\nステータス / 更新日時")]
+    end
+
+    CH1 -->|メッセージ| BOT
+    CH2 -->|メッセージ| BOT
+    CH3 -->|メッセージ| BOT
+
+    BOT -->|テキスト解析依頼| AI
+    AI -->|action + タスク情報| BOT
+
+    BOT -->|ステータス更新 / 行追加| DB
+    SCHED -->|未完了タスク取得| DB
+    SCHED -->|レポート生成依頼| AI
+    AI -->|Markdown レポート| SCHED
+    SCHED -->|週次投稿| REPORT
+    BOT -->|返信（✅ / 📝）| CH1
+</div></code></pre>
+<hr>
+<h2 id="%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E5%87%A6%E7%90%86%E3%83%95%E3%83%AD%E3%83%BC">メッセージ処理フロー</h2>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    MSG(["メッセージ受信"])
+    CHECK{"監視チャンネル？\n（TASK_CHANNELS）"}
+    SKIP(["スルー"])
+    PARSE["ai_agent.py\nClaude で解析\n→ JSON を取得"]
+
+    COMPLETE{"action =\ncomplete?"}
+    INPROG{"action =\nin_progress?"}
+    ADD{"action =\nadd?"}
+    NONE(["何もしない\n（雑談等）"])
+
+    FIND_C["sheets.py\nタスク名で部分一致検索"]
+    UPD_C["ステータス → 完了\n更新日時を記録"]
+    REPLY_C["✅ 完了メッセージ返信"]
+    ERR_C["⚠️ 未発見エラー返信"]
+
+    FIND_I["sheets.py\nタスク名で部分一致検索"]
+    UPD_I["ステータス → 進行中\n更新日時を記録"]
+    REPLY_I["🔄 進行中メッセージ返信"]
+
+    BUILD["タスク情報を辞書構築\n（名前/分類/優先度/期限/担当者）"]
+    APPEND["sheets.py\n末尾に新規行を追加\nID を自動採番（T0001…）"]
+    REPLY_A["📝 登録完了メッセージ返信"]
+
+    MSG --> CHECK
+    CHECK -->|対象外| SKIP
+    CHECK -->|対象| PARSE
+    PARSE --> COMPLETE
+    COMPLETE -->|Yes| FIND_C
+    COMPLETE -->|No| INPROG
+    INPROG -->|Yes| FIND_I
+    INPROG -->|No| ADD
+    ADD -->|Yes| BUILD
+    ADD -->|No| NONE
+    FIND_C -->|見つかった| UPD_C --> REPLY_C
+    FIND_C -->|見つからない| ERR_C
+    FIND_I --> UPD_I --> REPLY_I
+    BUILD --> APPEND --> REPLY_A
+</div></code></pre>
+<hr>
+<h2 id="%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%A7%8B%E6%88%90">プロジェクト構成</h2>
+<pre class="hljs"><code><div>discord-task-bot/
+├── src/
+│   ├── __init__.py
+│   ├── bot.py          # Discord イベント処理・起動エントリポイント
+│   ├── ai_agent.py     # Claude API 呼び出し・メッセージ解析・レポート生成
+│   ├── sheets.py       # Google Sheets CRUD 操作
+│   ├── scheduler.py    # 週次リマインド（APScheduler）
+│   └── config.py       # 環境変数・定数管理
+├── Dockerfile          # python:3.11-slim ベース
+├── fly.toml            # Fly.io デプロイ設定（nrt リージョン）
+├── requirements.txt    # 依存パッケージ
+├── credentials.json    # Google サービスアカウントキー（git 管理外）
+└── .env.example        # 環境変数テンプレート
+</div></code></pre>
+<h3 id="%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E4%BE%9D%E5%AD%98%E9%96%A2%E4%BF%82">モジュール依存関係</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph LR
+    BOT["bot.py"]
+    AI["ai_agent.py"]
+    SH["sheets.py"]
+    SC["scheduler.py"]
+    CF["config.py"]
+
+    BOT --> AI
+    BOT --> SH
+    BOT --> SC
+    BOT --> CF
+    SC --> SH
+    SC --> AI
+    SC --> CF
+    AI --> CF
+    SH --> CF
+</div></code></pre>
+<hr>
+<h2 id="google-%E3%82%B9%E3%83%97%E3%83%AC%E3%83%83%E3%83%89%E3%82%B7%E3%83%BC%E3%83%88%E6%A7%8B%E9%80%A0">Google スプレッドシート構造</h2>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>内容</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>ID（自動採番）</td>
+<td>T0001</td>
+</tr>
+<tr>
+<td>B</td>
+<td>タスク名</td>
+<td>○○機能の実装</td>
+</tr>
+<tr>
+<td>C</td>
+<td>分類</td>
+<td>開発</td>
+</tr>
+<tr>
+<td>D</td>
+<td>優先度</td>
+<td>高 / 中 / 低</td>
+</tr>
+<tr>
+<td>E</td>
+<td>期限</td>
+<td>2026/03/31</td>
+</tr>
+<tr>
+<td>F</td>
+<td>担当者</td>
+<td>Tomo</td>
+</tr>
+<tr>
+<td>G</td>
+<td>ステータス</td>
+<td>未着手 / 進行中 / 完了</td>
+</tr>
+<tr>
+<td>H</td>
+<td>更新日時</td>
+<td>2026/03/14 09:00</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>スプレッドシートの 1 行目に上記ヘッダーを手動で入力してください。</p>
+</blockquote>
+<hr>
+<h2 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h2>
+<h3 id="%E3%82%BF%E3%82%B9%E3%82%AF%E3%81%AE%E5%AE%8C%E4%BA%86%E5%A0%B1%E5%91%8A%E7%9B%A3%E8%A6%96%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%81%AB%E6%8A%95%E7%A8%BF">タスクの完了報告（監視チャンネルに投稿）</h3>
+<pre class="hljs"><code><div>○○機能の実装 完了しました
+バグ修正レビュー終わった done
+</div></code></pre>
+<p>Bot が返信します：</p>
+<blockquote>
+<p>✅ <strong>○○機能の実装</strong> を「完了」に更新しました！</p>
+</blockquote>
+<h3 id="%E3%82%BF%E3%82%B9%E3%82%AF%E3%81%AE%E9%80%B2%E6%8D%97%E6%9B%B4%E6%96%B0">タスクの進捗更新</h3>
+<pre class="hljs"><code><div>○○タスク着手します
+バグ修正レビュー 進行中
+</div></code></pre>
+<h3 id="%E3%82%BF%E3%82%B9%E3%82%AF%E3%81%AE%E6%96%B0%E8%A6%8F%E8%BF%BD%E5%8A%A0">タスクの新規追加</h3>
+<pre class="hljs"><code><div>追加: 決算レポート作成、期限2026/03/31、担当Tomo、優先度高
+タスク: バグ修正レビュー 来週中
+</div></code></pre>
+<p>Bot が返信します：</p>
+<blockquote>
+<p>📝 <strong>決算レポート作成</strong> を登録しました！<br>
+　ID: <code>T0005</code> ／ 優先度: 高 ／ 期限: 2026/03/31 ／ 担当: Tomo</p>
+</blockquote>
+<h3 id="%E9%80%B1%E6%AC%A1%E3%83%AC%E3%83%9D%E3%83%BC%E3%83%88%E8%87%AA%E5%8B%95">週次レポート（自動）</h3>
+<p>毎週月曜 09:00 JST に <code>REPORT_CHANNEL</code> へ自動投稿されます。</p>
+<pre class="hljs"><code><div>【週次タスクリマインド】2026/03/16
+
+未完了タスク 5件 / 担当: Tomo(3件) Sato(2件)
+
+⚠️ [高] 決算レポート作成 — Tomo / 期限 3/18（2日後）
+　 [高] API 設計レビュー — Sato / 期限 3/21
+　 [中] ドキュメント更新 — Tomo / 期限 未設定
+
+_週次リマインド from タスクBot_
+</div></code></pre>
+<hr>
+<h2 id="%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E6%89%8B%E9%A0%86">セットアップ手順</h2>
+<h3 id="1-discord-bot-%E4%BD%9C%E6%88%90">1. Discord Bot 作成</h3>
+<ol>
+<li><a href="https://discord.com/developers/applications">Discord Developer Portal</a> にアクセス</li>
+<li><strong>New Application</strong> → 名前を入力して作成</li>
+<li><strong>Bot</strong> タブ → <strong>Reset Token</strong> でトークンをコピー（一度しか表示されません）</li>
+<li><strong>Privileged Gateway Intents</strong> で <code>MESSAGE CONTENT INTENT</code> を有効化</li>
+<li><strong>OAuth2 → URL Generator</strong> で以下を選択してサーバーに招待
+<ul>
+<li>Scopes: <code>bot</code></li>
+<li>Permissions: <code>Read Messages/View Channels</code>, <code>Send Messages</code>, <code>Read Message History</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="2-google-sheets--%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88">2. Google Sheets + サービスアカウント</h3>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    participant You as あなた
+    participant GCloud as Google Cloud Console
+    participant Sheet as Google Sheets
+    participant Bot as credentials.json
+
+    You->>GCloud: Sheets API を有効化
+    You->>GCloud: サービスアカウント作成
+    GCloud-->>You: credentials.json ダウンロード
+    You->>Sheet: スプレッドシート新規作成（ヘッダー入力）
+    You->>Sheet: サービスアカウントのメールを「編集者」として共有
+    You->>Bot: プロジェクトルートに配置
+</div></code></pre>
+<h3 id="3-%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%81%AE%E8%A8%AD%E5%AE%9A">3. 環境変数の設定</h3>
+<pre class="hljs"><code><div>cp .env.example .env
+<span class="hljs-comment"># .env を編集して各値を入力</span>
+</div></code></pre>
+<p><code>.env.example</code> の内容：</p>
+<pre class="hljs"><code><div>DISCORD_TOKEN=your_discord_bot_token_here
+TASK_CHANNELS=task-todo,task-dev,task-ops   # カンマ区切り（空=全チャンネル）
+REPORT_CHANNEL=general                      # 週次レポートの投稿先
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+SPREADSHEET_ID=your_spreadsheet_id_here
+SHEET_NAME=タスク一覧
+CREDENTIALS_FILE=credentials.json
+</div></code></pre>
+<h3 id="4-flyio-%E3%81%B8%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4">4. Fly.io へデプロイ</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># flyctl のインストール（未インストールの場合）</span>
+<span class="hljs-comment"># https://fly.io/docs/hands-on/install-flyctl/</span>
+
+<span class="hljs-comment"># ログイン</span>
+flyctl auth login
+
+<span class="hljs-comment"># アプリ初期化（fly.toml の app 名が自動設定されます）</span>
+flyctl launch --no-deploy
+
+<span class="hljs-comment"># 機密情報をシークレットとして登録</span>
+flyctl secrets <span class="hljs-built_in">set</span> DISCORD_TOKEN=<span class="hljs-string">"your_token"</span>
+flyctl secrets <span class="hljs-built_in">set</span> ANTHROPIC_API_KEY=<span class="hljs-string">"your_key"</span>
+flyctl secrets <span class="hljs-built_in">set</span> SPREADSHEET_ID=<span class="hljs-string">"your_id"</span>
+flyctl secrets <span class="hljs-built_in">set</span> TASK_CHANNELS=<span class="hljs-string">"task-todo,task-dev,task-ops"</span>
+flyctl secrets <span class="hljs-built_in">set</span> REPORT_CHANNEL=<span class="hljs-string">"general"</span>
+flyctl secrets <span class="hljs-built_in">set</span> GOOGLE_CREDENTIALS=<span class="hljs-string">"<span class="hljs-variable">$(cat credentials.json)</span>"</span>
+
+<span class="hljs-comment"># デプロイ</span>
+flyctl deploy
+
+<span class="hljs-comment"># ログ確認</span>
+flyctl logs
+</div></code></pre>
+<blockquote>
+<p><strong>重要</strong>: <code>credentials.json</code> は <code>.gitignore</code> に追加してください。</p>
+</blockquote>
+<hr>
+<h2 id="%E3%82%B3%E3%82%B9%E3%83%88%E7%9B%AE%E5%AE%89%E6%9C%88%E9%A1%8D">コスト目安（月額）</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>無料枠</th>
+<th>超過時</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fly.io shared-cpu-1x 256MB</td>
+<td>3台まで無料</td>
+<td>$5/月〜</td>
+</tr>
+<tr>
+<td>Google Sheets API</td>
+<td>500 req/日</td>
+<td>無料のまま使用可</td>
+</tr>
+<tr>
+<td>Claude API (Haiku)</td>
+<td>なし</td>
+<td>~$0.80/100万トークン</td>
+</tr>
+<tr>
+<td><strong>合計</strong></td>
+<td><strong>$0〜</strong></td>
+<td><strong>$1〜$8/月</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Claude Haiku の消費トークン目安（1ヶ月）:</p>
+<ul>
+<li>メッセージ解析 × 200回 → 約 60,000 トークン</li>
+<li>週次レポート生成 × 4回 → 約 8,000 トークン</li>
+<li>合計: <strong>約 70,000 トークン ≒ $0.06</strong>（ほぼ無視できるコスト）</li>
+</ul>
+<hr>
+<h2 id="%E4%BE%9D%E5%AD%98%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8">依存パッケージ</h2>
+<table>
+<thead>
+<tr>
+<th>パッケージ</th>
+<th>バージョン</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>discord.py</td>
+<td>2.3.2</td>
+<td>Discord Bot フレームワーク</td>
+</tr>
+<tr>
+<td>anthropic</td>
+<td>0.34.2</td>
+<td>Claude API クライアント</td>
+</tr>
+<tr>
+<td>google-api-python-client</td>
+<td>2.143.0</td>
+<td>Google Sheets API</td>
+</tr>
+<tr>
+<td>google-auth</td>
+<td>2.34.0</td>
+<td>Google 認証</td>
+</tr>
+<tr>
+<td>APScheduler</td>
+<td>3.10.4</td>
+<td>週次スケジューラ</td>
+</tr>
+<tr>
+<td>python-dotenv</td>
+<td>1.0.1</td>
+<td>環境変数読み込み</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
