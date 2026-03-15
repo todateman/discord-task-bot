@@ -4,11 +4,10 @@ import logging
 import discord
 from discord import app_commands
 from datetime import datetime, timedelta, timezone
-from src.config import DISCORD_TOKEN, TASK_CHANNELS
-from src.ai_agent import parse_message
+from src.config import DISCORD_TOKEN, TASK_CHANNELS, SPREADSHEET_URL, STATUS_DONE, STATUS_IN_PROGRESS
+from src.ai_agent import parse_message, generate_weekly_report
 from src.sheets import update_task_status, add_task, find_task_row_in_rows, _get_all_rows, get_pending_tasks
 from src.scheduler import setup_scheduler
-from src.config import STATUS_DONE, STATUS_IN_PROGRESS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -136,6 +135,13 @@ async def on_message(message: discord.Message):
                 line += f"　[{t['status']}]"
                 lines.append(line)
             await message.reply("\n".join(lines))
+
+    elif action == "report":
+        tasks = get_pending_tasks()
+        today = datetime.now().strftime("%Y/%m/%d")
+        report = generate_weekly_report(tasks, today, sheets_url=SPREADSHEET_URL)
+        await message.channel.send(report)
+        logger.info(f"週次レポートをオンデマンドで #{message.channel.name} に投稿しました")
 
     # action == "none" は何もしない（雑談等はスルー）
 
