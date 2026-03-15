@@ -5,6 +5,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from src.config import (
     REPORT_CHANNEL,
+    SPREADSHEET_URL,
     WEEKLY_REPORT_DAY,
     WEEKLY_REPORT_HOUR,
     WEEKLY_REPORT_TIMEZONE,
@@ -43,7 +44,7 @@ async def _send_weekly_report(bot: discord.Client):
     try:
         tasks = get_pending_tasks()
         today = datetime.now().strftime("%Y/%m/%d")
-        report = generate_weekly_report(tasks, today)
+        report = generate_weekly_report(tasks, today, sheets_url=SPREADSHEET_URL)
 
         channel = discord.utils.get(bot.get_all_channels(), name=REPORT_CHANNEL)
         if channel is None:
