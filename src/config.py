@@ -17,6 +17,10 @@ CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # コスト最小化
 # Google Sheets
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 SHEET_NAME = os.getenv("SHEET_NAME", "タスク一覧")
+SPREADSHEET_URL = (
+    f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit"
+    if SPREADSHEET_ID else ""
+)
 CREDENTIALS_FILE = os.getenv("CREDENTIALS_FILE", "credentials.json")
 # Fly.io では JSON 全文をシークレットとして渡せる
 GOOGLE_CREDENTIALS = os.getenv("GOOGLE_CREDENTIALS", "").strip()

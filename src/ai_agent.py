@@ -17,7 +17,7 @@ PARSE_SYSTEM = """
 以下のJSONのみを返してください（説明文は不要）:
 
 {
-  "action": "complete" | "in_progress" | "add" | "list" | "none",
+  "action": "complete" | "in_progress" | "add" | "list" | "report" | "none",
   "task_name": "タスク名（actionがcomplete/in_progress/addのとき）",
   "category": "分類（addのとき、不明なら空文字）",
   "priority": "高" | "中" | "低"（addのとき、不明なら"中"）,
@@ -31,6 +31,7 @@ PARSE_SYSTEM = """
 - 「着手」「開始」「進行中」「やってる」「WIP」などが含まれる → "in_progress"
 - 「追加」「登録」「新規」「タスク:」「TODO:」で始まる → "add"
 - 「タスク一覧」「残っているタスク」「タスクを教えて」「何のタスク」「タスクある」など、タスクの一覧・確認を求めている → "list"
+- 「週次レポート」「週次進捗レポート」などを投稿・表示・確認するよう求めている → "report"
 - それ以外（雑談・質問・コマンド以外）→ "none"
 """
 
@@ -77,10 +78,12 @@ REPORT_SYSTEM = """
 """
 
 
-def generate_weekly_report(tasks: list[dict], today: str) -> str:
+def generate_weekly_report(tasks: list[dict], today: str, sheets_url: str = "") -> str:
     """未完了タスクリストから週次レポートを生成"""
+    sheets_line = f"\n📋 [タスク一覧スプレッドシート]({sheets_url})" if sheets_url else ""
+
     if not tasks:
-        return "現在、未完了タスクはありません。お疲れ様でした！\n\n_週次リマインド from タスクBot_"
+        return f"現在、未完了タスクはありません。お疲れ様でした！{sheets_line}\n\n_週次リマインド from タスクBot_"
 
     task_text = "\n".join(
         f"- [{t['priority']}] {t['task_name']} / 担当:{t['assignee'] or '未定'}"
@@ -95,7 +98,8 @@ def generate_weekly_report(tasks: list[dict], today: str) -> str:
             system=REPORT_SYSTEM.format(today=today),
             messages=[{"role": "user", "content": f"未完了タスク一覧:\n{task_text}"}],
         )
-        return resp.content[0].text.strip()
+        report = resp.content[0].text.strip()
+        return f"{report}{sheets_line}"
     except Exception as e:
         logger.error(f"generate_weekly_report エラー: {e}")
         # フォールバック: シンプルなリスト
@@ -105,5 +109,5 @@ def generate_weekly_report(tasks: list[dict], today: str) -> str:
                 f"・[{t['priority']}] {t['task_name']} "
                 f"({t['assignee'] or '未定'} / {t['due_date'] or '期限未設定'})"
             )
-        lines.append("\n_週次リマインド from タスクBot_")
+        lines.append(f"\n_週次リマインド from タスクBot_{sheets_line}")
         return "\n".join(lines)
